@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Emit;
-using BO;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ex06_EntityFramework.Models
@@ -11,7 +10,8 @@ namespace Ex06_EntityFramework.Models
         public DbSet <Articles> articles { get; set; }
         public DbSet <Orders> orders { get; set; }
         public DbSet <OrderDetails> orderDetails{ get; set; }
-        //public DbSet <Customers> customer{ get; set; }
+        public DbSet <Customers> customer{ get; set; }
+
 
         public ApplicationDbContext()
         {
@@ -46,14 +46,21 @@ namespace Ex06_EntityFramework.Models
                 .HasConversion(v => string.Join(";", v),
                 v => v.Split(new[] { ';' }, StringSplitOptions.None).ToList());
 
-            //modelBuilder.Entity<Customers>(entity =>
-            //{
-            //    // définir la clé primaire
-            //    entity.HasKey(c => c.CustomerId);
-
-            //    // définir la relation 1:N avec Orders
-            //    entity.HasMany(c => c.Orders);
-            //});
+            modelBuilder.Entity<Customers>()
+                .HasMany(c => c.Orders)
+                .WithOne(o => o.Customer)
+                .HasForeignKey(o => o.CustomerId);          
+            
+            // Configurer le Value Object Address
+            modelBuilder.Entity<Customers>()
+                .OwnsOne(c => c.Address, a =>
+                {
+                    a.Property(p => p.Street).HasColumnName("Address_Street");
+                    a.Property(p => p.City).HasColumnName("Address_City");
+                    a.Property(p => p.PostalCode).HasColumnName("Address_PostalCode");
+                    a.Property(p => p.State).HasColumnName("Address_State");
+                    a.Property(p => p.Country).HasColumnName("Address_Country");
+                });
         }
     }
 

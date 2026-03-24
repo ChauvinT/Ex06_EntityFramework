@@ -1,6 +1,4 @@
-﻿using BO;
-
-namespace Ex06_EntityFramework.Interfaces
+﻿namespace Ex06_EntityFramework.Interfaces
 {
     public interface IWareHouseService
     {

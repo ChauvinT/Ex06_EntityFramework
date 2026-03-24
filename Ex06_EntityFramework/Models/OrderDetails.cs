@@ -1,5 +1,5 @@
 ﻿
-namespace BO
+namespace Ex06_EntityFramework
 {
     public class OrderDetails
     {

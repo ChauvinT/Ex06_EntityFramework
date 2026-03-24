@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ex06_EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCore : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,25 @@ namespace Ex06_EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_articles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "customer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address_Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address_City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address_PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address_Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address_State = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_customer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,6 +80,12 @@ namespace Ex06_EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_orders_customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_orders_warehouse_WarehouseId",
                         column: x => x.WarehouseId,
@@ -108,6 +133,11 @@ namespace Ex06_EntityFramework.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_orders_CustomerId",
+                table: "orders",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_orders_WarehouseId",
                 table: "orders",
                 column: "WarehouseId");
@@ -124,6 +154,9 @@ namespace Ex06_EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "orders");
+
+            migrationBuilder.DropTable(
+                name: "customer");
 
             migrationBuilder.DropTable(
                 name: "warehouse");

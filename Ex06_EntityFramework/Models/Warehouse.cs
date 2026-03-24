@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BO
+namespace Ex06_EntityFramework
 {
     public class Warehouse
     {

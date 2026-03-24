@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BO
+namespace Ex06_EntityFramework
 {
     public class Articles
     {

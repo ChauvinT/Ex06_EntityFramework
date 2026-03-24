@@ -1,5 +1,4 @@
-﻿using BO;
-using Ex06_EntityFramework.Interfaces;
+﻿using Ex06_EntityFramework.Interfaces;
 using Ex06_EntityFramework.Models;
 using static Ex06_EntityFramework.Interfaces.IWareHouseService;
 
@@ -26,7 +25,7 @@ namespace Ex06_EntityFramework.Services
             var order = _context.orders.FirstOrDefault(o => o.Id == orderId);
             if (order != null)
             {
-                _context.Remove(orderId);
+                _context.Remove(order);
                 _context.SaveChanges();
             }
         }
@@ -46,10 +45,18 @@ namespace Ex06_EntityFramework.Services
 
         public double getAverageArticlePerOrder()
         {
-            if (!_context.orders.Any())
-                return 0;
+            //var totalArticles = _context.orderDetails.Sum(od => od.Quantity);
+            //var totalOrders = _context.orders.Count();
 
-            return _context.orders.Average(o => o.OrderDetails.Sum(od => od.Quantity));
+            //if (totalOrders == 0)
+            //    return 0;
+
+            //return (double)totalArticles / totalOrders;
+
+            return _context.orderDetails
+                .GroupBy(od => od.OrderId)
+                .Select(g => g.Sum(od => od.Quantity))
+                .Average();
         }
     }
 }

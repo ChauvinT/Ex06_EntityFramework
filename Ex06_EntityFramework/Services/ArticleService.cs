@@ -1,5 +1,4 @@
-﻿using BO;
-using Ex06_EntityFramework.Interfaces;
+﻿using Ex06_EntityFramework.Interfaces;
 using Ex06_EntityFramework.Models;
 
 namespace Ex06_EntityFramework.Services

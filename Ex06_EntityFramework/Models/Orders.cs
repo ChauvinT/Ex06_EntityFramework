@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Ex06_EntityFramework.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BO
+namespace Ex06_EntityFramework
 {
     public class Orders
     {
@@ -30,6 +31,8 @@ namespace BO
         //public Warehouse Warehouse { get; set; } = new Warehouse();
 
         public int CustomerId { get; set; }
+
+        public Customers Customer { get; set; }
 
     }
 }

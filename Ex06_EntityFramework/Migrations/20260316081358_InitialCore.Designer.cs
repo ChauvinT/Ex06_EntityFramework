@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ex06_EntityFramework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260313132317_ResetIdentity1")]
-    partial class ResetIdentity1
+    [Migration("20260316081358_InitialCore")]
+    partial class InitialCore
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Ex06_EntityFramework.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BO.Articles", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Articles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,28 @@ namespace Ex06_EntityFramework.Migrations
                     b.ToTable("articles");
                 });
 
-            modelBuilder.Entity("BO.OrderDetails", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Models.Customers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("customer");
+                });
+
+            modelBuilder.Entity("Ex06_EntityFramework.OrderDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,7 +102,7 @@ namespace Ex06_EntityFramework.Migrations
                     b.ToTable("orderDetails");
                 });
 
-            modelBuilder.Entity("BO.Orders", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Orders", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,12 +140,14 @@ namespace Ex06_EntityFramework.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("orders");
                 });
 
-            modelBuilder.Entity("BO.Warehouse", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Warehouse", b =>
                 {
                     b.Property<int>("WarehouseId")
                         .ValueGeneratedOnAdd()
@@ -152,15 +175,59 @@ namespace Ex06_EntityFramework.Migrations
                     b.ToTable("warehouse");
                 });
 
-            modelBuilder.Entity("BO.OrderDetails", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Models.Customers", b =>
                 {
-                    b.HasOne("BO.Articles", "Article")
+                    b.OwnsOne("Ex06_EntityFramework.Models.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("CustomersId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Address_City");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Address_Country");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Address_PostalCode");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Address_State");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Address_Street");
+
+                            b1.HasKey("CustomersId");
+
+                            b1.ToTable("customer");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomersId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Ex06_EntityFramework.OrderDetails", b =>
+                {
+                    b.HasOne("Ex06_EntityFramework.Articles", "Article")
                         .WithMany()
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BO.Orders", "Order")
+                    b.HasOne("Ex06_EntityFramework.Orders", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -171,21 +238,34 @@ namespace Ex06_EntityFramework.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("BO.Orders", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Orders", b =>
                 {
-                    b.HasOne("BO.Warehouse", null)
+                    b.HasOne("Ex06_EntityFramework.Models.Customers", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ex06_EntityFramework.Warehouse", null)
                         .WithMany("Orders")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("BO.Orders", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Models.Customers", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Ex06_EntityFramework.Orders", b =>
                 {
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("BO.Warehouse", b =>
+            modelBuilder.Entity("Ex06_EntityFramework.Warehouse", b =>
                 {
                     b.Navigation("Orders");
                 });
